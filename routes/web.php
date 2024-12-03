@@ -60,13 +60,40 @@ Route::get('/carrito/vaciar', function () {
     return redirect()->route('articulos.index');
 })->name('carrito.vaciar');
 
+// Route::get('/comprar', function () {
+
+//     return view('facturas.numero');
+
+// })->middleware('auth')->name('agregar-numero');
+
+// Route::post('/comprar', function (Request $request) {
+//     $carrito = Carrito::carrito();
+//     $validated = $request->validate([
+//         'numero' => 'required|max:999999|unique:facturas,numero',
+//     ]);
+//     DB::beginTransaction();
+//     $factura = new Factura($validated);
+//     $factura->user()->associate(Auth::user());
+//     $factura->save();
+//     session()->flash('exito', 'La factura se ha creado correctamente.');
+//     // die();
+//     $attachs = [];
+//     foreach ($carrito->getLineas() as $articulo_id => $linea) {
+//         $attachs[$articulo_id] = ['cantidad' => $linea->getCantidad()];
+//     }
+//     $factura->articulos()->attach($attachs);
+//     DB::commit();
+//     session()->forget('carrito');
+//     return redirect()->route('articulos.index');
+// })->middleware('auth')->name('comprar');
+
 Route::post('/comprar', function () {
     $carrito = Carrito::carrito();
     DB::beginTransaction();
     $factura = new Factura();
-    $factura->numero = 100;
     $factura->user()->associate(Auth::user());
     $factura->save();
+    session()->flash('exito', 'La factura se ha creado correctamente.');
     // die();
     $attachs = [];
     foreach ($carrito->getLineas() as $articulo_id => $linea) {

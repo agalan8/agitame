@@ -10,6 +10,8 @@ class Articulo extends Model
     /** @use HasFactory<\Database\Factories\ArticuloFactory> */
     use HasFactory;
 
+    protected $fillable = ['codigo', 'descripcion', 'precio'];
+
     public function departamentos()
     {
         return $this->belongsToMany(Departamento::class);

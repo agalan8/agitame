@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Generico\Carrito;
 use App\Models\Articulo;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ArticuloController extends Controller
 {
@@ -24,7 +25,7 @@ class ArticuloController extends Controller
      */
     public function create()
     {
-        //
+        return view('articulos.create');
     }
 
     /**
@@ -32,7 +33,14 @@ class ArticuloController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'codigo' => 'required|max:999999|unique:articulos,codigo',
+            'descripcion' => 'required|string|max:255',
+            'precio' => 'required|max:999999|decimal: 2',
+        ]);
+        $articulo = Articulo::create($validated);
+        session()->flash('exito', 'Artículo creado correctamente.');
+        return redirect()->route('articulos.show', $articulo);
     }
 
     /**
@@ -40,7 +48,9 @@ class ArticuloController extends Controller
      */
     public function show(Articulo $articulo)
     {
-        //
+        return view('articulos.show', [
+            'articulo' => $articulo,
+        ]);
     }
 
     /**
@@ -48,7 +58,9 @@ class ArticuloController extends Controller
      */
     public function edit(Articulo $articulo)
     {
-        //
+        return view('articulos.edit', [
+            'articulo' => $articulo,
+        ]);
     }
 
     /**
@@ -56,7 +68,19 @@ class ArticuloController extends Controller
      */
     public function update(Request $request, Articulo $articulo)
     {
-        //
+        $validated = $request->validate([
+            'codigo' => [
+                'required',
+                'max:2',
+                Rule::unique('articulos')->ignore($articulo),
+            ],
+            'descripcion' => 'required|string|max:255',
+            'precio' => 'required|max:6|decimal: 2',
+        ]);
+        $articulo->fill($validated);
+        $articulo->save();
+        session()->flash('exito', 'Artículo modificado correctamente.');
+        return redirect()->route('articulos.index');
     }
 
     /**
@@ -64,6 +88,7 @@ class ArticuloController extends Controller
      */
     public function destroy(Articulo $articulo)
     {
-        //
+        $articulo->delete();
+        return redirect()->route('articulos.index');
     }
 }

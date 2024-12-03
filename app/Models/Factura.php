@@ -4,11 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Ramsey\Uuid\Uuid;
 
 class Factura extends Model
 {
     /** @use HasFactory<\Database\Factories\FacturaFactory> */
     use HasFactory;
+
+    public function newUniqueId(): string
+    {
+        return (string) Uuid::uuid4();
+    }
 
     public function user()
     {
